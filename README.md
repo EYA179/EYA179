@@ -1,24 +1,24 @@
 # EYA Zineddine — Portfolio
 
-Personal portfolio website for EYA Zineddine, built as a polished single-page experience around profile, journey, skills, and contact.
+My personal portfolio website, built as a polished single-page experience around my profile, journey, skills, and contact links. ✨
 
-**Live site:** [eyazineddine.com](https://eyazineddine.com)
+**Live site:** [eyazineddine.com](https://eyazineddine.com) 🌐
 
 ## Description
 
-A clean, responsive portfolio presenting EYA's academic path, technical background, selected projects, and professional contact links.
+A clean, responsive portfolio where I present my academic path, technical background, selected projects, and professional contact links.
 
 ## Abstract
 
-The site highlights experience across machine learning, cybersecurity, embedded systems, and web development. It includes bilingual content, a visual timeline, and an interactive map-based journey section.
+This site highlights my experience across machine learning, cybersecurity, embedded systems, and web development. It includes bilingual content, a visual timeline, and an interactive map-based journey section.
 
 ## Features
 
-- Responsive single-page layout
-- French and English content
-- Interactive journey map
-- Dark and light theme toggle
-- Public contact links
+- Responsive single-page layout 📱
+- French and English content 🌍
+- Interactive journey map 🗺️
+- Dark and light theme toggle 🌓
+- Public contact links 🔗
 
 ## Tech Stack
 
