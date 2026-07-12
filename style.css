@@ -41,12 +41,13 @@ html.light {
 }
 
 /* Smooth theme transitions */
-body, nav, section, .panel-card, .journey-panel, .contact-link, footer {
+body, nav, section, .panel-card, .journey-panel, .contact-link, .project-card, footer {
   transition: background-color 0.25s ease, color 0.25s ease, border-color 0.25s ease;
 }
 
 * { margin: 0; padding: 0; box-sizing: border-box; }
 html { scroll-behavior: smooth; }
+section { scroll-margin-top: calc(var(--nav-h) + 18px); }
 
 body {
   font-family: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
@@ -424,6 +425,73 @@ nav ul a:hover {
 }
 .tag-accent { background: #eff6ff; border-color: #bfdbfe; color: var(--accent-dim); }
 
+/* ── Projects ── */
+#projects {
+  padding: 72px 2rem;
+  background: var(--white);
+}
+#projects .section-title { margin-bottom: 0.45rem; }
+.projects-intro {
+  max-width: 560px;
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  margin-bottom: 1.7rem;
+}
+.projects-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.9rem;
+}
+.project-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 1.1rem;
+  min-height: 230px;
+  border: 1px solid var(--b-light);
+  border-radius: var(--radius);
+  background: var(--white);
+  padding: 1.1rem;
+}
+.project-kicker {
+  display: inline-block;
+  margin-bottom: 0.55rem;
+  color: var(--accent-dim);
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.project-card h3 {
+  margin-bottom: 0.45rem;
+  color: var(--text);
+  font-size: 1rem;
+  line-height: 1.35;
+}
+.project-card p {
+  color: var(--text-muted);
+  font-size: 0.84rem;
+  line-height: 1.6;
+}
+.project-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.55rem;
+}
+.project-actions .btn {
+  min-height: 36px;
+  padding: 0.45rem 0.9rem;
+  font-size: 0.8rem;
+}
+.project-repo {
+  color: var(--text);
+  border-color: var(--b-light);
+}
+.project-repo:hover {
+  color: var(--accent-dim);
+  border-color: #bfdbfe;
+}
+
 /* ── Contact ── */
 #contact {
   padding: 72px 2rem;
@@ -523,6 +591,8 @@ footer {
   .map-sticky { display: none; }
   .panels-col { border-left: none; }
   .journey-panel { min-height: auto; padding: 2.5rem 1.5rem; }
-  #about, #skills, #contact { padding: 52px 1.25rem; }
+  #about, #skills, #projects, #contact { padding: 52px 1.25rem; }
   .journey-header { padding: 48px 1.25rem 28px; }
+  .projects-grid { grid-template-columns: 1fr; }
+  .project-card { min-height: auto; }
 }

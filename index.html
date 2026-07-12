@@ -95,6 +95,7 @@
     <li><a href="#about"   data-i18n="nav.about">À propos</a></li>
     <li><a href="#journey" data-i18n="nav.journey">Parcours</a></li>
     <li><a href="#skills"  data-i18n="nav.skills">Compétences</a></li>
+    <li><a href="#projects" data-i18n="nav.projects">Projets</a></li>
     <li><a href="#contact" data-i18n="nav.contact">Contact</a></li>
   </ul>
   <div class="nav-controls">
@@ -351,6 +352,65 @@
   </div>
 </section>
 
+<!-- ── Projects ── -->
+<section id="projects">
+  <div class="container">
+    <p class="section-label dim-label" data-i18n="proj.lbl">Sélection</p>
+    <h2 class="section-title dark-title" data-i18n="proj.ttl">Projets</h2>
+    <p class="projects-intro" data-i18n="proj.sub">Quatre projets publics avec une page de présentation et le dépôt GitHub associé.</p>
+
+    <div class="projects-grid">
+      <article class="project-card">
+        <div>
+          <span class="project-kicker">Laravel · E-commerce</span>
+          <h3>Zedify Tech Commerce</h3>
+          <p data-i18n="proj.zedify">Plateforme e-commerce Laravel pour une boutique tech avec catalogue, panier, commande, contacts et tableau de bord.</p>
+        </div>
+        <div class="project-actions">
+          <a href="http://zedify-tech-commerce.eyazineddine.com" target="_blank" rel="noopener" class="btn btn-primary" data-i18n="proj.live">Voir le site</a>
+          <a href="https://github.com/EYA179/Zedify-Tech-Commerce" target="_blank" rel="noopener" class="btn btn-outline project-repo">GitHub</a>
+        </div>
+      </article>
+
+      <article class="project-card">
+        <div>
+          <span class="project-kicker">Machine Learning · Notebook</span>
+          <h3>PassGuard Password Strength Classifier</h3>
+          <p data-i18n="proj.passguard">Classification de mots de passe faibles, moyens et forts avec TF-IDF et comparaison de modèles supervisés.</p>
+        </div>
+        <div class="project-actions">
+          <a href="https://passguard-password-strength-classi.eyazineddine.com" target="_blank" rel="noopener" class="btn btn-primary" data-i18n="proj.live">Voir le site</a>
+          <a href="https://github.com/EYA179/PassGuard-Password-Strength-Classifier" target="_blank" rel="noopener" class="btn btn-outline project-repo">GitHub</a>
+        </div>
+      </article>
+
+      <article class="project-card">
+        <div>
+          <span class="project-kicker">FastAPI · Computer Vision</span>
+          <h3>VisionLab Image Classification Server</h3>
+          <p data-i18n="proj.vision">Serveur de classification d'images avec modèles TorchVision, upload, transformations, histogrammes et résultats téléchargeables.</p>
+        </div>
+        <div class="project-actions">
+          <a href="https://vision-lab-image-classification.eyazineddine.com" target="_blank" rel="noopener" class="btn btn-primary" data-i18n="proj.live">Voir le site</a>
+          <a href="https://github.com/EYA179/VisionLab-Image-Classification-Server" target="_blank" rel="noopener" class="btn btn-outline project-repo">GitHub</a>
+        </div>
+      </article>
+
+      <article class="project-card">
+        <div>
+          <span class="project-kicker">NASA CMAPSS · RUL</span>
+          <h3>AeroRUL Predictive Maintenance</h3>
+          <p data-i18n="proj.aero">Pipeline de maintenance prédictive avec données CMAPSS, ingestion, prétraitement, workflow modèle et interface de prédiction RUL.</p>
+        </div>
+        <div class="project-actions">
+          <a href="https://aero-rul-predictive-maintenance.eyazineddine.com" target="_blank" rel="noopener" class="btn btn-primary" data-i18n="proj.live">Voir le site</a>
+          <a href="https://github.com/EYA179/AeroRUL-Predictive-Maintenance" target="_blank" rel="noopener" class="btn btn-outline project-repo">GitHub</a>
+        </div>
+      </article>
+    </div>
+  </div>
+</section>
+
 <!-- ── Contact ── -->
 <section id="contact">
   <div class="sec-particles" id="contactParticles"></div>
@@ -378,7 +438,7 @@
 // ─────────────────────────────────────────────
 const T = {
   fr: {
-    'nav.about':'À propos','nav.journey':'Parcours','nav.skills':'Compétences','nav.contact':'Contact',
+    'nav.about':'À propos','nav.journey':'Parcours','nav.skills':'Compétences','nav.projects':'Projets','nav.contact':'Contact',
     'hero.badge':'Ingénieure ML · Disponible à Paris',
     'hero.sub':'Étudiante M2 Intelligence Artificielle & Cybersécurité',
     'hero.loc':'🇮🇹 Cagliari, Italie  ·  🇫🇷 Paris, France',
@@ -419,11 +479,18 @@ const T = {
     'tag.intrusion':"Détection d'intrusions",'tag.netsec':'Sécurité des réseaux',
     'tag.forensics':'Forensique informatique','tag.malware':'Analyse de malwares',
     'tag.websec':'Sécurité web','tag.embedded':'Systèmes embarqués',
+    'proj.lbl':'Sélection','proj.ttl':'Projets',
+    'proj.sub':'Quatre projets publics avec une page de présentation et le dépôt GitHub associé.',
+    'proj.live':'Voir le site',
+    'proj.zedify':'Plateforme e-commerce Laravel pour une boutique tech avec catalogue, panier, commande, contacts et tableau de bord.',
+    'proj.passguard':'Classification de mots de passe faibles, moyens et forts avec TF-IDF et comparaison de modèles supervisés.',
+    'proj.vision':"Serveur de classification d'images avec modèles TorchVision, upload, transformations, histogrammes et résultats téléchargeables.",
+    'proj.aero':'Pipeline de maintenance prédictive avec données CMAPSS, ingestion, prétraitement, workflow modèle et interface de prédiction RUL.',
     'ct.lbl':'Me contacter','ct.ttl':'Travaillons ensemble',
     'ct.sub':'À la recherche d\'un poste d\'Ingénieure Machine Learning à Paris. Alternance bienvenue.',
   },
   en: {
-    'nav.about':'About','nav.journey':'Journey','nav.skills':'Skills','nav.contact':'Contact',
+    'nav.about':'About','nav.journey':'Journey','nav.skills':'Skills','nav.projects':'Projects','nav.contact':'Contact',
     'hero.badge':'ML Engineer · Available in Paris',
     'hero.sub':'M2 Student in Artificial Intelligence & Cybersecurity',
     'hero.loc':'🇮🇹 Cagliari, Italy  ·  🇫🇷 Paris, France',
@@ -464,6 +531,13 @@ const T = {
     'tag.intrusion':'Intrusion Detection','tag.netsec':'Network Security',
     'tag.forensics':'Computer Forensics','tag.malware':'Malware Analysis',
     'tag.websec':'Web Security','tag.embedded':'Embedded Systems',
+    'proj.lbl':'Selection','proj.ttl':'Projects',
+    'proj.sub':'Four public projects with a live showcase page and the matching GitHub repository.',
+    'proj.live':'Open site',
+    'proj.zedify':'Laravel e-commerce platform for a tech store with catalog, cart, checkout, contacts, and dashboard views.',
+    'proj.passguard':'Password strength classification for weak, medium, and strong labels using TF-IDF and supervised model comparison.',
+    'proj.vision':'Image classification server with TorchVision models, upload, transformations, histograms, and downloadable results.',
+    'proj.aero':'Predictive maintenance pipeline with CMAPSS data, ingestion, preprocessing, model workflow, and an RUL prediction interface.',
     'ct.lbl':'Contact','ct.ttl':"Let's work together",
     'ct.sub':'Seeking a Machine Learning Engineer position in Paris. Open to work-study programs.',
   }
