@@ -94,6 +94,7 @@
   <ul>
     <li><a href="#about"   data-i18n="nav.about">À propos</a></li>
     <li><a href="#journey" data-i18n="nav.journey">Parcours</a></li>
+    <li><a href="#talks" data-i18n="nav.talks">Séminaires</a></li>
     <li><a href="#projects" data-i18n="nav.projects">Projets</a></li>
     <li><a href="#skills"  data-i18n="nav.skills">Compétences</a></li>
     <li><a href="#contact" data-i18n="nav.contact">Contact</a></li>
@@ -132,6 +133,7 @@
       <div class="hero-actions">
         <a href="mailto:eyazineddine902@gmail.com" class="btn btn-primary" data-i18n="hero.cta">Me contacter</a>
         <a href="https://www.linkedin.com/in/eyazineddine/" target="_blank" rel="noopener" class="btn btn-outline">LinkedIn</a>
+        <a href="https://github.com/EYA179" target="_blank" rel="noopener" class="btn btn-outline">GitHub</a>
       </div>
     </div>
   </div>
@@ -284,6 +286,35 @@
 
     </div><!-- /panels-col -->
   </div><!-- /journey-layout -->
+</section>
+
+<!-- ── Talks & Seminars ── -->
+<section id="talks">
+  <div class="container">
+    <p class="section-label dim-label" data-i18n="talk.lbl">Séminaire</p>
+    <h2 class="section-title dark-title" data-i18n="talk.ttl">Talks &amp; Seminars</h2>
+
+    <article class="talk-card">
+      <a href="https://roc.cnam.fr/?p=5149" target="_blank" rel="noopener" class="talk-photo" aria-label="Open ROC seminar page">
+        <img src="assets/roc-seminar.jpg" alt="Eya Zineddine presenting during a CNAM ROC team seminar">
+        <span data-i18n="talk.badge">CNAM · ROC Team</span>
+      </a>
+      <div class="talk-copy">
+        <div class="talk-meta">
+          <span>December 10, 2025</span>
+          <span>Paris, France</span>
+        </div>
+        <h3 data-i18n="talk.title">Enhancing Anomaly Detection Using GNNs with PCA and DTW</h3>
+        <p data-i18n="talk.body">
+          Eya participated as a speaker in a ROC Team seminar at CNAM Paris, presenting work on anomaly detection for networking datasets using graph neural networks with PCA and Dynamic Time Warping.
+        </p>
+        <div class="talk-tags" aria-label="Seminar topics">
+          <span>GNN</span><span>PCA</span><span>DTW</span><span>Anomaly Detection</span><span>Networking Datasets</span>
+        </div>
+        <a href="https://roc.cnam.fr/?p=5149" target="_blank" rel="noopener" class="btn btn-primary" data-i18n="talk.link">Voir le séminaire</a>
+      </div>
+    </article>
+  </div>
 </section>
 
 <!-- ── Projects ── -->
@@ -483,7 +514,7 @@
 // ─────────────────────────────────────────────
 const T = {
   fr: {
-    'nav.about':'À propos','nav.journey':'Parcours','nav.skills':'Compétences','nav.projects':'Projets','nav.contact':'Contact',
+    'nav.about':'À propos','nav.journey':'Parcours','nav.talks':'Séminaires','nav.skills':'Compétences','nav.projects':'Projets','nav.contact':'Contact',
     'hero.badge':'Ingénieure ML · Disponible à Paris',
     'hero.sub':'Étudiante M2 Intelligence Artificielle & Cybersécurité',
     'hero.loc':'🇮🇹 Cagliari, Italie  ·  🇫🇷 Paris, France',
@@ -524,6 +555,11 @@ const T = {
     'tag.intrusion':"Détection d'intrusions",'tag.netsec':'Sécurité des réseaux',
     'tag.forensics':'Forensique informatique','tag.malware':'Analyse de malwares',
     'tag.websec':'Sécurité web','tag.embedded':'Systèmes embarqués',
+    'talk.lbl':'Séminaire','talk.ttl':'Séminaires & présentations',
+    'talk.badge':'CNAM · ROC Team',
+    'talk.title':'Enhancing Anomaly Detection Using GNNs with PCA and DTW',
+    'talk.body':"Eya a participé comme intervenante à un séminaire de l'équipe ROC au CNAM Paris, avec une présentation sur la détection d'anomalies dans des datasets réseau avec des graph neural networks, PCA et Dynamic Time Warping.",
+    'talk.link':'Voir le séminaire',
     'proj.lbl':'Sélection','proj.ttl':'Projets',
     'proj.sub':'Classés du plus complet au plus ciblé, avec une page de présentation et le dépôt GitHub associé.',
     'proj.live':'Voir le site',
@@ -535,7 +571,7 @@ const T = {
     'ct.sub':'À la recherche d\'un poste d\'Ingénieure Machine Learning à Paris. Alternance bienvenue.',
   },
   en: {
-    'nav.about':'About','nav.journey':'Journey','nav.skills':'Skills','nav.projects':'Projects','nav.contact':'Contact',
+    'nav.about':'About','nav.journey':'Journey','nav.talks':'Seminars','nav.skills':'Skills','nav.projects':'Projects','nav.contact':'Contact',
     'hero.badge':'ML Engineer · Available in Paris',
     'hero.sub':'M2 Student in Artificial Intelligence & Cybersecurity',
     'hero.loc':'🇮🇹 Cagliari, Italy  ·  🇫🇷 Paris, France',
@@ -576,6 +612,11 @@ const T = {
     'tag.intrusion':'Intrusion Detection','tag.netsec':'Network Security',
     'tag.forensics':'Computer Forensics','tag.malware':'Malware Analysis',
     'tag.websec':'Web Security','tag.embedded':'Embedded Systems',
+    'talk.lbl':'Seminar','talk.ttl':'Talks & Seminars',
+    'talk.badge':'CNAM · ROC Team',
+    'talk.title':'Enhancing Anomaly Detection Using GNNs with PCA and DTW',
+    'talk.body':'Eya participated as a speaker in a ROC Team seminar at CNAM Paris, presenting work on anomaly detection for networking datasets using graph neural networks with PCA and Dynamic Time Warping.',
+    'talk.link':'Open seminar',
     'proj.lbl':'Selection','proj.ttl':'Projects',
     'proj.sub':'Ordered from most complete to most focused, each with a live showcase page and matching GitHub repository.',
     'proj.live':'Open site',
@@ -713,7 +754,7 @@ applyTheme(theme);
 // Project card reveal
 // ─────────────────────────────────────────────
 (function () {
-  const cards = document.querySelectorAll('.project-card');
+  const cards = document.querySelectorAll('.project-card, .talk-card');
   if (!cards.length) return;
   if (!('IntersectionObserver' in window)) {
     cards.forEach(card => card.classList.add('is-visible'));
