@@ -1,1099 +1,337 @@
 <!DOCTYPE html>
-<html lang="fr">
-<script>
-  /* Apply saved theme before CSS loads → prevents flash */
-  if (localStorage.getItem('theme') === 'light') document.documentElement.classList.add('light');
-</script>
-<!-- Critical CSS: loader covers page instantly, no flash -->
-<style>
-  html, body { margin: 0; padding: 0; }
-  body { background: #0d1b2a; }
-  html.light body { background: #f8fafc; }
-  #loader {
-    position: fixed; inset: 0; z-index: 99999;
-    background: #0d1b2a;
-    display: flex; flex-direction: column;
-    align-items: center; justify-content: center;
-    overflow: hidden;
-  }
-  /* Keep cursor off-screen until JS runs — don't use opacity (it breaks the cursor) */
-  .cursor-dot, .cursor-ring { left: -200px; top: -200px; }
-</style>
+<html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>EYA Zineddine — Ingénieure Machine Learning · Paris</title>
-  <meta name="description" content="Portfolio d'EYA Zineddine, Ingénieure Machine Learning disponible à Paris. M2 IA & Cybersécurité, Université de Cagliari. GNN · Détection d'anomalies · PyTorch · Cybersécurité." />
-  <meta name="robots" content="index, follow" />
-  <meta name="keywords" content="EYA Zineddine, Machine Learning Engineer, Ingénieure Machine Learning, Paris, Intelligence Artificielle, GNN, Cybersécurité, PyTorch, TensorFlow, alternance" />
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Eya Zineddine · Machine Learning Engineer</title>
+  <script>
+    try {
+      if (localStorage.getItem('theme') === 'light') document.documentElement.classList.add('light');
+      var l = localStorage.getItem('lang'); if (l === 'fr' || l === 'en') document.documentElement.lang = l;
+    } catch (e) {}
+  </script>
+  <meta name="description" content="Eya Zineddine, Machine Learning engineer in Paris. M.Sc. in AI and ML (University of Cagliari), research on graph neural networks and anomaly detection for cybersecurity at CNAM." />
   <link rel="canonical" href="https://eyazineddine.com" />
-
-  <!-- Preconnect to the Esri tile server so tile fetches are instant -->
-  <link rel="preconnect" href="https://server.arcgisonline.com" crossorigin>
-
-  <!-- Open Graph -->
-  <meta property="og:type"        content="website" />
-  <meta property="og:url"         content="https://eyazineddine.com" />
-  <meta property="og:title"       content="EYA Zineddine — Ingénieure Machine Learning" />
-  <meta property="og:description" content="Ingénieure ML disponible à Paris · M2 IA & Cybersécurité · GNN · PyTorch · Détection d'anomalies" />
-  <meta property="og:image"       content="https://eyazineddine.com/assets/github-pp.png" />
-
-  <!-- Twitter Card -->
-  <meta name="twitter:card"        content="summary" />
-  <meta name="twitter:title"       content="EYA Zineddine — Ingénieure Machine Learning" />
-  <meta name="twitter:description" content="Ingénieure ML disponible à Paris · M2 IA & Cybersécurité" />
-  <meta name="twitter:image"       content="https://eyazineddine.com/assets/github-pp.png" />
-
-  <!-- JSON-LD structured data -->
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://eyazineddine.com" />
+  <meta property="og:title" content="Eya Zineddine · Machine Learning Engineer" />
+  <meta property="og:description" content="Graph neural networks, anomaly detection and ML for cybersecurity. Based in Paris." />
+  <meta property="og:image" content="https://eyazineddine.com/assets/profilepic.jpeg" />
+  <meta name="twitter:card" content="summary" />
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
     "@type": "Person",
-    "name": "EYA Zineddine",
-    "jobTitle": "Ingénieure Machine Learning",
+    "name": "Eya Zineddine",
+    "jobTitle": "Machine Learning Engineer",
     "url": "https://eyazineddine.com",
-    "image": "https://eyazineddine.com/assets/github-pp.png",
+    "image": "https://eyazineddine.com/assets/profilepic.jpeg",
     "email": "eyazineddine902@gmail.com",
-    "sameAs": ["https://www.linkedin.com/in/eyazineddine/"],
+    "sameAs": ["https://www.linkedin.com/in/eyazineddine/", "https://github.com/EYA179"],
     "alumniOf": { "@type": "CollegeOrUniversity", "name": "Università degli Studi di Cagliari" },
-    "knowsAbout": ["Machine Learning", "Deep Learning", "Graph Neural Networks", "Cybersecurity", "Python", "PyTorch", "TensorFlow", "Anomaly Detection"]
+    "knowsAbout": ["Machine Learning", "Graph Neural Networks", "Anomaly Detection", "Cybersecurity", "PyTorch", "Time Series"]
   }
   </script>
-
   <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet" />
-  <link rel="icon" type="image/png" href="assets/github-pp.png" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Karla:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="preconnect" href="https://server.arcgisonline.com" crossorigin />
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <link rel="icon" type="image/png" href="assets/github-pp.png" />
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
 
-<!-- ── Loader ── -->
-<div id="loader" aria-hidden="true">
-  <div id="petalCanvas"></div>
-  <div class="loader-photo-wrap">
-    <img src="assets/github-pp.png" alt="" class="loader-photo" />
-  </div>
-  <div class="loader-pct"><span id="pctNum">0</span><sup>%</sup></div>
-  <div class="loader-caption">Just a moment…</div>
-</div>
-
-<!-- ── Custom cursor (desktop only) ── -->
-<div class="cursor-dot"  aria-hidden="true"></div>
-<div class="cursor-ring" aria-hidden="true"></div>
-
-<!-- ── Nav ── -->
-<nav>
-  <a href="#hero" class="nav-name">
-  <img src="assets/github-pp.png" alt="EYA Zineddine" class="nav-logo" />
-  EYA Zineddine
-</a>
+<nav class="nav" aria-label="Main">
   <ul>
-    <li><a href="#about"   data-i18n="nav.about">À propos</a></li>
-    <li><a href="#journey" data-i18n="nav.journey">Parcours</a></li>
-    <li><a href="#talks" data-i18n="nav.talks">Séminaires</a></li>
-    <li><a href="#projects" data-i18n="nav.projects">Projets</a></li>
-    <li><a href="#skills"  data-i18n="nav.skills">Compétences</a></li>
+    <li><a href="#about" data-i18n="nav.about">About</a></li>
+    <li><a href="#focus" data-i18n="nav.focus">Focus</a></li>
+    <li><a href="#experience" data-i18n="nav.exp">Experience</a></li>
+    <li><a href="#projects" data-i18n="nav.projects">Projects</a></li>
+    <li><a href="#journey" data-i18n="nav.journey">Journey</a></li>
+    <li><a href="#education" data-i18n="nav.edu">Education</a></li>
     <li><a href="#contact" data-i18n="nav.contact">Contact</a></li>
   </ul>
-  <div class="nav-controls">
-    <button class="ctrl-btn" id="langBtn" onclick="toggleLang()">🇬🇧 EN</button>
-    <button class="ctrl-btn" id="themeBtn" onclick="toggleTheme()" aria-label="Toggle theme">
-      <!-- Moon = click to go light (shown in dark mode) -->
-      <svg id="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
-      </svg>
-      <!-- Sun = click to go dark (shown in light mode) -->
-      <svg id="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:none">
-        <circle cx="12" cy="12" r="5"/>
-        <line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/>
-        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
-        <line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/>
-        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
-      </svg>
+  <div class="nav-ctrls">
+    <button class="icon-btn" id="langBtn" type="button" aria-label="Switch language">FR</button>
+    <button class="icon-btn theme-btn" id="themeBtn" type="button" aria-label="Toggle light or dark mode">
+      <svg class="moon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
+      <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="4.5"/><path d="M12 2v2.5M12 19.5V22M2 12h2.5M19.5 12H22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M4.9 19.1l1.8-1.8M17.3 6.7l1.8-1.8"/></svg>
     </button>
   </div>
 </nav>
 
-<!-- ── Hero ── -->
-<section id="hero">
-  <div class="sec-particles" id="heroParticles"></div>
-  <div class="hero-inner">
-    <img src="assets/profilepic.jpeg" alt="EYA Zineddine" class="hero-photo" />
-    <div class="hero-text">
-      <div class="hero-badge" data-i18n="hero.badge">Ingénieure ML · Disponible à Paris</div>
-      <h1>EYA Zineddine</h1>
-      <p class="hero-subtitle" data-i18n="hero.sub">Étudiante M2 Intelligence Artificielle &amp; Cybersécurité</p>
-      <p class="hero-loc">
-        <span data-i18n="hero.loc">🇮🇹 Cagliari, Italie  ·  🇫🇷 Paris, France</span>
-      </p>
-      <div class="hero-actions">
-        <a href="mailto:eyazineddine902@gmail.com" class="btn btn-primary" data-i18n="hero.cta">Me contacter</a>
-        <a href="https://www.linkedin.com/in/eyazineddine/" target="_blank" rel="noopener" class="btn btn-outline">LinkedIn</a>
-        <a href="https://github.com/EYA179" target="_blank" rel="noopener" class="btn btn-outline">GitHub</a>
+<main>
+  <!-- Hero -->
+  <section class="hero" id="about">
+    <div class="wrap">
+      <div class="eyebrow grad-text" data-i18n="hero.eyebrow">Machine Learning Engineer · AI &amp; Cybersecurity</div>
+      <h1 data-i18n="hero.hi">Hi, I'm Eya</h1>
+      <div class="bubble" id="bubble" aria-live="polite"><span id="bubbleText"></span><span class="caret" aria-hidden="true"></span></div>
+      <div class="photo-wrap">
+        <img class="photo" src="assets/profilepic.jpeg" alt="Eya Zineddine" width="200" height="200" />
+        <span class="wave" aria-hidden="true">👋</span>
+      </div>
+      <div class="chips" id="chips">
+        <button class="chip" type="button" data-q="research" data-i18n="chip.research">What's your research about?</button>
+        <button class="chip" type="button" data-q="phd" data-i18n="chip.phd">Are you looking for a PhD?</button>
+        <button class="chip" type="button" data-q="projects" data-i18n="chip.projects">Show me your projects</button>
+        <button class="chip" type="button" data-q="stack" data-i18n="chip.stack">Your tech stack?</button>
+        <button class="chip" type="button" data-q="contact" data-i18n="chip.contact">How do I reach you?</button>
+      </div>
+      <form class="ask" id="askForm" autocomplete="off">
+        <label for="askInput" class="visually-hidden" style="position:absolute;left:-9999px" data-i18n="ask.label">Ask Eya a question</label>
+        <input id="askInput" name="q" maxlength="500" placeholder="Say something to Eya…" data-i18n-ph="ask.ph" />
+        <button type="submit" id="askBtn" aria-label="Send">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+        </button>
+      </form>
+      <div class="ask-note" data-i18n="ask.note">Answers come from an AI assistant that knows my CV. For anything important, email me.</div>
+      <div class="cta">
+        <a class="btn-primary" href="assets/Eya_Zineddine_Resume.pdf" target="_blank" rel="noopener" data-i18n="cta.cv">Download Resume</a>
+        <a class="btn-link" href="https://www.linkedin.com/in/eyazineddine/" target="_blank" rel="noopener">LinkedIn</a>
+        <a class="btn-link" href="https://github.com/EYA179" target="_blank" rel="noopener">GitHub</a>
       </div>
     </div>
-  </div>
-</section>
+  </section>
 
-<!-- ── About ── -->
-<section id="about">
-  <div class="inner">
-    <p class="section-label dim-label" data-i18n="about.lbl">Profil</p>
-    <h2 class="section-title dark-title" data-i18n="about.ttl">À propos</h2>
-    <p data-i18n="about.p1">Étudiante en Master 2 Informatique – Intelligence Artificielle à l'Université de Cagliari, avec une spécialisation en cybersécurité et apprentissage automatique.</p>
-    <p data-i18n="about.p2">J'ai effectué deux séjours à Paris au CNAM : un semestre Erasmus (2024–2025) puis un stage de recherche de 6 mois en Machine Learning (sept. 2025 – mars 2026), où j'ai conçu un pipeline de prétraitement sur 4 datasets de cybersécurité et implémenté un workflow de détection d'anomalies pour des modèles GNN.</p>
-    <p data-i18n="about.p3">Autres projets : classification d'images médicales (&gt;90% de précision, 500+ images), système IoT embarqué sur ESP32, afficheur intelligent Arduino, plateforme e-commerce Laravel.</p>
-  </div>
-</section>
-
-<!-- ── Journey ── -->
-<section id="journey">
-
-  <div class="journey-header">
-    <p class="section-label accent-label" data-i18n="jrn.lbl">Géographie</p>
-    <h2 class="section-title light-title" data-i18n="jrn.ttl">D'une rive à l'autre</h2>
-    <p data-i18n="jrn.sub">Scroll pour suivre le parcours · Sfax → Cagliari → Paris → Cagliari</p>
-  </div>
-
-  <div class="journey-layout">
-
-    <!-- LEFT: Sticky Map -->
-    <div class="map-col">
-      <div class="map-sticky">
-        <div id="leaflet-map"></div>
-        <div class="map-progress-overlay">
-          <div class="prog-stop">
-            <span class="prog-dot" id="dot-0"></span>
-            <span class="prog-label">Sfax</span>
-          </div>
-          <div class="prog-line" id="line-0"></div>
-          <div class="prog-stop">
-            <span class="prog-dot" id="dot-1"></span>
-            <span class="prog-label">Cagliari</span>
-          </div>
-          <div class="prog-line" id="line-1"></div>
-          <div class="prog-stop">
-            <span class="prog-dot" id="dot-2"></span>
-            <span class="prog-label">Paris</span>
-          </div>
-          <div class="prog-line" id="line-2"></div>
-          <div class="prog-stop">
-            <span class="prog-dot" id="dot-3"></span>
-            <span class="prog-label">Cagliari</span>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- RIGHT: Scrollable Panels -->
-    <div class="panels-col">
-
-      <!-- Panel 1: Sfax -->
-      <div class="journey-panel" data-stop="0">
-        <div class="panel-num">01</div>
-        <h3 class="panel-city">Sfax, Tunisie</h3>
-        <p class="panel-country">🇹🇳 2018 – 2023</p>
-
-        <div class="panel-card">
-          <span class="card-type" data-i18n="type.edu">Formation</span>
-          <strong data-i18n="p1c1.ttl">ENETCOM – École Nat. d'Électronique et Télécoms</strong>
-          <p data-i18n="p1c1.dsc">Licence ICT spécialisation IoT · Master M1 Systèmes Embarqués</p>
-        </div>
-        <div class="panel-card">
-          <span class="card-type stage" data-i18n="type.int">Stage</span>
-          <strong data-i18n="p1c2.ttl">STEG Tunisie · Juil. 2020</strong>
-          <p data-i18n="p1c2.dsc">Gestion base de données consommation énergétique · Analyse VBA/Excel</p>
-        </div>
-        <div class="panel-card">
-          <span class="card-type stage" data-i18n="type.int">Stage</span>
-          <strong data-i18n="p1c3.ttl">IGL Distribution · Juin–Juil. 2021</strong>
-          <p data-i18n="p1c3.dsc">Afficheur publicitaire intelligent Arduino Wi-Fi · Interface web temps réel</p>
-        </div>
-        <div class="panel-card">
-          <span class="card-type stage" data-i18n="type.int">Stage</span>
-          <strong data-i18n="p1c4.ttl">ESSE · Févr.–Juin 2022</strong>
-          <p data-i18n="p1c4.dsc">Système IoT embarqué ESP32 + EMG · 20+ sessions de tests · Firebase</p>
-        </div>
-        <div class="panel-card">
-          <span class="card-type stage" data-i18n="type.int">Stage</span>
-          <strong data-i18n="p1c5.ttl">Exadev · Juin–Juil. 2023</strong>
-          <p data-i18n="p1c5.dsc">Plateforme e-commerce Laravel · 50+ produits · Authentification sécurisée</p>
-        </div>
+  <!-- Focus -->
+  <section id="focus">
+    <div class="wrap">
+      <h2 class="section-title" data-i18n="focus.ttl">What I do</h2>
+      <div class="cards">
+        <article class="card reveal">
+          <h3 class="grad-text" data-i18n="f1.t">Graph ML &amp; Anomaly Detection</h3>
+          <p data-i18n="f1.d">Graph neural networks for intrusion detection, and multivariate time series anomaly detection combining PCA, Dynamic Time Warping and GNNs on the SWaT industrial dataset.</p>
+        </article>
+        <article class="card reveal">
+          <h3 class="grad-text" data-i18n="f2.t">Machine Learning for Cybersecurity</h3>
+          <p data-i18n="f2.d">Preprocessing pipelines for large, noisy security datasets and reproducible evaluation protocols, built during my research internship at CNAM Paris.</p>
+        </article>
+        <article class="card reveal">
+          <h3 class="grad-text" data-i18n="f3.t">Computer Vision &amp; Applied ML</h3>
+          <p data-i18n="f3.d">Medical image classification above 90% accuracy, an image classification server, and a predictive maintenance pipeline on NASA CMAPSS.</p>
+        </article>
+        <article class="card reveal">
+          <h3 class="grad-text" data-i18n="f4.t">Embedded Systems &amp; IoT</h3>
+          <p data-i18n="f4.d">From ESP32 firmware and EMG signal processing to Arduino Wi-Fi devices: I like models that meet real sensors.</p>
+        </article>
       </div>
 
-      <!-- Panel 2: Cagliari -->
-      <div class="journey-panel" data-stop="1">
-        <div class="panel-num">02</div>
-        <h3 class="panel-city">Cagliari, Sardaigne</h3>
-        <p class="panel-country">🇮🇹 Oct. 2023 – Août 2024</p>
-
-        <div class="panel-card">
-          <span class="card-type" data-i18n="type.edu">Formation</span>
-          <strong>Università degli Studi di Cagliari</strong>
-          <p data-i18n="p2c1.dsc">Master M2 – Ingénierie Informatique · Intelligence Artificielle &amp; Machine Learning</p>
+      <h3 class="sub-title" data-i18n="tool.ttl">Toolbox</h3>
+      <div class="toolbox reveal">
+        <div>
+          <h4 class="grad-text" data-i18n="tool.lang">Languages</h4>
+          <div class="tags"><span class="tag">Python</span><span class="tag">C / C++</span><span class="tag">Java</span><span class="tag">JavaScript</span><span class="tag">MATLAB</span><span class="tag">SQL</span><span class="tag">VBA</span></div>
         </div>
-        <div class="panel-card">
-          <span class="card-type research" data-i18n="type.proj">Projet</span>
-          <strong data-i18n="p2c2.ttl">Classification d'images médicales</strong>
-          <p data-i18n="p2c2.dsc">Détection de cancer de la peau · 500+ images · Précision &gt;90% · Serveur web temps réel</p>
+        <div>
+          <h4 class="grad-text" data-i18n="tool.ml">ML &amp; AI</h4>
+          <div class="tags"><span class="tag">PyTorch</span><span class="tag">TensorFlow / Keras</span><span class="tag">scikit-learn</span><span class="tag">pandas</span><span class="tag">NumPy</span><span class="tag">GNNs</span><span class="tag" data-i18n="tool.ts">Time series</span></div>
         </div>
-        <div class="panel-card">
-          <span class="card-type erasmus" data-i18n="type.exch">Mobilité</span>
-          <strong data-i18n="p2c3.ttl">Sélection ERASMUS</strong>
-          <p data-i18n="p2c3.dsc">Admission au programme d'échange compétitif ERASMUS pour Paris</p>
+        <div>
+          <h4 class="grad-text" data-i18n="tool.sec">Security</h4>
+          <div class="tags"><span class="tag" data-i18n="tool.ids">Intrusion detection</span><span class="tag" data-i18n="tool.net">Network security</span><span class="tag" data-i18n="tool.for">Forensics</span><span class="tag" data-i18n="tool.mal">Malware analysis</span><span class="tag" data-i18n="tool.web">Web security</span></div>
         </div>
-      </div>
-
-      <!-- Panel 3: Paris -->
-      <div class="journey-panel" data-stop="2">
-        <div class="panel-num">03</div>
-        <h3 class="panel-city">Paris, France</h3>
-        <p class="panel-country">🇫🇷 Sept. 2024 – Mars 2026</p>
-
-        <div class="panel-card">
-          <span class="card-type erasmus" data-i18n="type.era">Erasmus</span>
-          <strong>CNAM Paris · Sept. 2024 – Févr. 2025</strong>
-          <p data-i18n="p3c1.dsc">Big Data · Sécurité des Réseaux · Forensique Informatique · Sécurité Web · Malwares</p>
-        </div>
-        <div class="panel-card">
-          <span class="card-type research" data-i18n="type.int">Stage</span>
-          <strong data-i18n="p3c2.ttl">CNAM Paris – Ingénieur Machine Learning · Sept. 2025 – Mars 2026</strong>
-          <p data-i18n="p3c2.dsc">Pipeline de détection d'anomalies sur 4 datasets cybersécurité · Modèles GNN · Séries temporelles</p>
-        </div>
-      </div>
-
-      <!-- Panel 4: Cagliari (retour) -->
-      <div class="journey-panel" data-stop="3">
-        <div class="panel-num">04</div>
-        <h3 class="panel-city">Cagliari, Sardaigne</h3>
-        <p class="panel-country">🇮🇹 Mars 2026 – présent</p>
-
-        <div class="panel-card">
-          <span class="card-type" data-i18n="type.edu">Formation</span>
-          <strong>Università degli Studi di Cagliari</strong>
-          <p data-i18n="p4c1.dsc">Master M2 en cours · Intelligence Artificielle &amp; Machine Learning</p>
-        </div>
-        <div class="panel-card">
-          <span class="card-type current" data-i18n="type.seek">Recherche</span>
-          <strong data-i18n="p4c2.ttl">Ouverte aux opportunités – Paris</strong>
-          <p data-i18n="p4c2.dsc">Ingénieure Machine Learning · CDI / CDD · Alternance bienvenue</p>
-        </div>
-      </div>
-
-    </div><!-- /panels-col -->
-  </div><!-- /journey-layout -->
-</section>
-
-<!-- ── Talks & Seminars ── -->
-<section id="talks">
-  <div class="container">
-    <p class="section-label dim-label" data-i18n="talk.lbl">Séminaire</p>
-    <h2 class="section-title dark-title" data-i18n="talk.ttl">Talks &amp; Seminars</h2>
-
-    <article class="talk-card">
-      <a href="https://roc.cnam.fr/?p=5149" target="_blank" rel="noopener" class="talk-photo" aria-label="Open ROC seminar page">
-        <img src="assets/roc-seminar.jpg" alt="Eya Zineddine presenting during a CNAM ROC team seminar">
-        <span data-i18n="talk.badge">CNAM · ROC Team</span>
-      </a>
-      <div class="talk-copy">
-        <div class="talk-meta">
-          <span>December 10, 2025</span>
-          <span>Paris, France</span>
-        </div>
-        <h3 data-i18n="talk.title">Enhancing Anomaly Detection Using GNNs with PCA and DTW</h3>
-        <p data-i18n="talk.body">
-          Eya participated as a speaker in a ROC Team seminar at CNAM Paris, presenting work on anomaly detection for networking datasets using graph neural networks with PCA and Dynamic Time Warping.
-        </p>
-        <div class="talk-tags" aria-label="Seminar topics">
-          <span>GNN</span><span>PCA</span><span>DTW</span><span>Anomaly Detection</span><span>Networking Datasets</span>
-        </div>
-        <a href="https://roc.cnam.fr/?p=5149" target="_blank" rel="noopener" class="btn btn-primary" data-i18n="talk.link">Voir le séminaire</a>
-      </div>
-    </article>
-  </div>
-</section>
-
-<!-- ── Projects ── -->
-<section id="projects">
-  <div class="container">
-    <p class="section-label dim-label" data-i18n="proj.lbl">Sélection</p>
-    <h2 class="section-title dark-title" data-i18n="proj.ttl">Projets</h2>
-
-    <div class="projects-grid">
-      <article class="project-card project-featured" style="--project-accent:#60a5fa; --delay:0ms;">
-        <div class="project-main">
-          <div>
-            <div class="project-topline">
-              <span class="project-rank">01</span>
-              <span class="project-kicker">NASA CMAPSS · RUL</span>
-            </div>
-            <h3>AeroRUL Predictive Maintenance</h3>
-            <p data-i18n="proj.aero">Pipeline de maintenance prédictive avec données CMAPSS, ingestion, prétraitement, workflow modèle et interface de prédiction RUL.</p>
-            <div class="project-tags" aria-label="Project topics">
-              <span>CMAPSS</span><span>RUL</span><span>PostgreSQL</span><span>RabbitMQ</span><span>Flask</span><span>Next.js</span>
-            </div>
-          </div>
-          <div class="project-visual visual-aero" aria-hidden="true">
-            <span class="pv-node"></span><span class="pv-node"></span><span class="pv-node"></span>
-            <span class="pv-line"></span><span class="pv-gauge"></span>
-          </div>
-        </div>
-        <div class="project-actions">
-          <a href="https://aero-rul-predictive-maintenance.eyazineddine.com" target="_blank" rel="noopener" class="btn btn-primary" data-i18n="proj.live">Voir le site</a>
-          <a href="https://github.com/EYA179/AeroRUL-Predictive-Maintenance" target="_blank" rel="noopener" class="btn btn-outline project-repo">GitHub</a>
-        </div>
-      </article>
-
-      <article class="project-card" style="--project-accent:#34d399; --delay:90ms;">
-        <div class="project-main">
-          <div>
-            <div class="project-topline">
-              <span class="project-rank">02</span>
-              <span class="project-kicker">FastAPI · Computer Vision</span>
-            </div>
-            <h3>VisionLab Image Classification Server</h3>
-            <p data-i18n="proj.vision">Serveur de classification d'images avec modèles TorchVision, upload, transformations, histogrammes et résultats téléchargeables.</p>
-            <div class="project-tags" aria-label="Project topics">
-              <span>FastAPI</span><span>TorchVision</span><span>ImageNet</span><span>PIL</span><span>Histograms</span>
-            </div>
-          </div>
-          <div class="project-visual visual-vision" aria-hidden="true">
-            <span></span><span></span><span></span><span></span><i></i><i></i><i></i>
-          </div>
-        </div>
-        <div class="project-actions">
-          <a href="https://vision-lab-image-classification.eyazineddine.com" target="_blank" rel="noopener" class="btn btn-primary" data-i18n="proj.live">Voir le site</a>
-          <a href="https://github.com/EYA179/VisionLab-Image-Classification-Server" target="_blank" rel="noopener" class="btn btn-outline project-repo">GitHub</a>
-        </div>
-      </article>
-
-      <article class="project-card" style="--project-accent:#a78bfa; --delay:180ms;">
-        <div class="project-main">
-          <div>
-            <div class="project-topline">
-              <span class="project-rank">03</span>
-              <span class="project-kicker">Machine Learning · Notebook</span>
-            </div>
-            <h3>PassGuard Password Strength Classifier</h3>
-            <p data-i18n="proj.passguard">Classification de mots de passe faibles, moyens et forts avec TF-IDF et comparaison de modèles supervisés.</p>
-            <div class="project-tags" aria-label="Project topics">
-              <span>TF-IDF</span><span>Logistic Regression</span><span>AdaBoost</span><span>XGBoost</span><span>EDA</span>
-            </div>
-          </div>
-          <div class="project-visual visual-passguard" aria-hidden="true">
-            <span>k</span><span>i</span><span>n</span><span>o</span><b></b><b></b><b></b>
-          </div>
-        </div>
-        <div class="project-actions">
-          <a href="https://passguard-password-strength-classi.eyazineddine.com" target="_blank" rel="noopener" class="btn btn-primary" data-i18n="proj.live">Voir le site</a>
-          <a href="https://github.com/EYA179/PassGuard-Password-Strength-Classifier" target="_blank" rel="noopener" class="btn btn-outline project-repo">GitHub</a>
-        </div>
-      </article>
-
-      <article class="project-card" style="--project-accent:#f59e0b; --delay:270ms;">
-        <div class="project-main">
-          <div>
-            <div class="project-topline">
-              <span class="project-rank">04</span>
-              <span class="project-kicker">Laravel · E-commerce</span>
-            </div>
-            <h3>Zedify Tech Commerce</h3>
-            <p data-i18n="proj.zedify">Plateforme e-commerce Laravel pour une boutique tech avec catalogue, panier, commande, contacts et tableau de bord.</p>
-            <div class="project-tags" aria-label="Project topics">
-              <span>Laravel</span><span>Blade</span><span>Eloquent</span><span>SQLite</span><span>Dashboard</span>
-            </div>
-          </div>
-          <div class="project-visual visual-zedify" aria-hidden="true">
-            <span></span><span></span><span></span><i></i>
-          </div>
-        </div>
-        <div class="project-actions">
-          <a href="http://zedify-tech-commerce.eyazineddine.com" target="_blank" rel="noopener" class="btn btn-primary" data-i18n="proj.live">Voir le site</a>
-          <a href="https://github.com/EYA179/Zedify-Tech-Commerce" target="_blank" rel="noopener" class="btn btn-outline project-repo">GitHub</a>
-        </div>
-      </article>
-    </div>
-  </div>
-</section>
-
-<!-- ── Compétences ── -->
-<section id="skills">
-  <div class="container">
-    <p class="section-label dim-label" data-i18n="sk.lbl">Savoir-faire</p>
-    <h2 class="section-title dark-title" data-i18n="sk.ttl">Compétences</h2>
-    <div class="skills-grid">
-      <div>
-        <div class="skill-group-label" data-i18n="sg1">IA &amp; Machine Learning</div>
-        <div class="skill-tags">
-          <span class="tag tag-accent">Python</span>
-          <span class="tag tag-accent">Machine Learning</span>
-          <span class="tag tag-accent">Deep Learning</span>
-          <span class="tag tag-accent">Graph Neural Networks (GNN)</span>
-          <span class="tag tag-accent">PyTorch</span>
-          <span class="tag tag-accent">TensorFlow</span>
-          <span class="tag">scikit-learn</span>
-          <span class="tag">pandas</span>
-          <span class="tag">NumPy</span>
-          <span class="tag" data-i18n="tag.anom">Détection d'anomalies</span>
-          <span class="tag" data-i18n="tag.imgcls">Classification d'images</span>
-          <span class="tag" data-i18n="tag.timeseries">Séries temporelles</span>
-        </div>
-      </div>
-      <div>
-        <div class="skill-group-label" data-i18n="sg2">Cybersécurité</div>
-        <div class="skill-tags">
-          <span class="tag" data-i18n="tag.cyber">Cybersécurité</span>
-          <span class="tag" data-i18n="tag.intrusion">Détection d'intrusions</span>
-          <span class="tag" data-i18n="tag.netsec">Sécurité des réseaux</span>
-          <span class="tag" data-i18n="tag.forensics">Forensique informatique</span>
-          <span class="tag" data-i18n="tag.malware">Analyse de malwares</span>
-          <span class="tag" data-i18n="tag.websec">Sécurité web</span>
-        </div>
-      </div>
-      <div>
-        <div class="skill-group-label" data-i18n="sg3">Embarqué &amp; IoT</div>
-        <div class="skill-tags">
-          <span class="tag" data-i18n="tag.embedded">Systèmes embarqués</span>
-          <span class="tag">IoT</span>
-          <span class="tag">ESP32</span>
-          <span class="tag">Arduino</span>
-          <span class="tag">Raspberry Pi</span>
-          <span class="tag">FPGA</span>
-          <span class="tag">MATLAB</span>
-          <span class="tag">LabVIEW</span>
-          <span class="tag">VHDL</span>
-          <span class="tag">C/C++</span>
-        </div>
-      </div>
-      <div>
-        <div class="skill-group-label" data-i18n="sg4">Développement</div>
-        <div class="skill-tags">
-          <span class="tag">Flutter</span>
-          <span class="tag">Laravel</span>
-          <span class="tag">Firebase</span>
-          <span class="tag">JavaScript</span>
-          <span class="tag">Java</span>
-          <span class="tag">HTML / CSS</span>
-          <span class="tag">Full Stack</span>
-          <span class="tag">VBA</span>
+        <div>
+          <h4 class="grad-text" data-i18n="tool.sys">Systems &amp; Web</h4>
+          <div class="tags"><span class="tag">ESP32</span><span class="tag">Arduino</span><span class="tag">Raspberry Pi</span><span class="tag">FPGA / VHDL</span><span class="tag">Laravel</span><span class="tag">Flutter</span><span class="tag">Firebase</span><span class="tag">Git</span></div>
         </div>
       </div>
     </div>
-  </div>
-</section>
+  </section>
 
-<!-- ── Contact ── -->
-<section id="contact">
-  <div class="sec-particles" id="contactParticles"></div>
-  <p class="section-label accent-label" data-i18n="ct.lbl">Me contacter</p>
-  <h2 class="section-title light-title" data-i18n="ct.ttl">Travaillons ensemble</h2>
-  <p class="contact-sub" data-i18n="ct.sub">Disponible pour une alternance Ingénieur Machine Learning à Paris.</p>
-  <div class="contact-links">
-    <a href="mailto:eyazineddine902@gmail.com" class="contact-link">
-      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
-      eyazineddine902@gmail.com
-    </a>
-    <a href="https://www.linkedin.com/in/eyazineddine/" target="_blank" rel="noopener" class="contact-link">
-      <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>
-      LinkedIn
-    </a>
-  </div>
-</section>
+  <!-- Experience -->
+  <section id="experience">
+    <div class="wrap">
+      <h2 class="section-title" data-i18n="exp.ttl">Experience</h2>
+      <div class="timeline">
+        <article class="job reveal">
+          <div class="job-date" data-i18n="j1.date">Sep 2025 - Mar 2026</div>
+          <h3 data-i18n="j1.role">Machine Learning Engineer, Research Internship</h3>
+          <div class="job-org">@ <strong>CNAM</strong> · Paris, France</div>
+          <div class="tags"><span class="tag">Python</span><span class="tag">PyTorch</span><span class="tag">GNNs</span><span class="tag" data-i18n="tool.ts">Time series</span></div>
+          <ul>
+            <li data-i18n="j1.b1">Built a scalable preprocessing pipeline for time series cybersecurity data, detecting and filtering attack-related anomalies across 4 benchmark datasets.</li>
+            <li data-i18n="j1.b2">Implemented an anomaly-aware training and evaluation workflow for GNN intrusion detection models, validated against 4 attack types.</li>
+            <li data-i18n="j1.b3">Designed reproducible evaluation protocols comparing anomaly-filtering strategies, and presented the work at the ROC team seminar.</li>
+          </ul>
+        </article>
+        <article class="job reveal">
+          <div class="job-date" data-i18n="j2.date">Jun 2023 - Jul 2023</div>
+          <h3 data-i18n="j2.role">Full Stack Software Engineer, Internship</h3>
+          <div class="job-org">@ <strong>Exadev</strong> · Sfax, Tunisia</div>
+          <div class="tags"><span class="tag">Laravel</span><span class="tag">PHP</span><span class="tag">Git</span></div>
+          <ul>
+            <li data-i18n="j2.b1">Developed a Laravel e-commerce platform (50+ products) with secure authentication, cart, order tracking and user profiles.</li>
+            <li data-i18n="j2.b2">Built a responsive interface with a full checkout flow and role-based access control.</li>
+          </ul>
+        </article>
+        <article class="job reveal">
+          <div class="job-date" data-i18n="j3.date">Feb 2022 - Jun 2022</div>
+          <h3 data-i18n="j3.role">Embedded Systems &amp; IoT Engineer, Internship</h3>
+          <div class="job-org">@ <strong>ESSE</strong> · Sfax, Tunisia</div>
+          <div class="tags"><span class="tag">ESP32</span><span class="tag">Flutter</span><span class="tag">Firebase</span><span class="tag">MATLAB</span></div>
+          <ul>
+            <li data-i18n="j3.b1">Designed a wearable EMG monitoring system: ESP32 firmware, Grove-EMG sensors on 2 muscle groups, and a Flutter app with real-time Firebase sync.</li>
+            <li data-i18n="j3.b2">Processed and visualised EMG signals in MATLAB across 20+ supervised test sessions.</li>
+          </ul>
+        </article>
+        <article class="job reveal">
+          <div class="job-date" data-i18n="j4.date">Jun 2021 - Jul 2021</div>
+          <h3 data-i18n="j4.role">Embedded Development Internship</h3>
+          <div class="job-org">@ <strong>IGL Distribution</strong> · Sfax, Tunisia</div>
+          <ul>
+            <li data-i18n="j4.b1">Built a smart advertising display on Arduino with Wi-Fi and a real-time web control interface.</li>
+          </ul>
+        </article>
+        <article class="job reveal">
+          <div class="job-date" data-i18n="j5.date">Jul 2020</div>
+          <h3 data-i18n="j5.role">Data Internship</h3>
+          <div class="job-org">@ <strong>STEG</strong> · Sfax, Tunisia</div>
+          <ul>
+            <li data-i18n="j5.b1">Managed an energy consumption database and automated its analysis with VBA and Excel.</li>
+          </ul>
+        </article>
+      </div>
 
-<footer><p>© 2026 EYA Zineddine</p></footer>
+      <h3 class="sub-title" data-i18n="talk.ttl">Talks</h3>
+      <article class="talk reveal">
+        <img src="assets/roc-seminar.jpg" alt="Eya presenting at the ROC team seminar, CNAM Paris" loading="lazy" />
+        <div>
+          <div class="meta" data-i18n="talk.meta">CNAM · ROC Team seminar · 10 December 2025 · Paris</div>
+          <h3>Enhancing Anomaly Detection Using GNNs with PCA and DTW</h3>
+          <p data-i18n="talk.d">I presented my work on anomaly detection for networking datasets, using graph neural networks combined with PCA and Dynamic Time Warping.</p>
+          <div class="tags"><span class="tag">GNN</span><span class="tag">PCA</span><span class="tag">DTW</span><span class="tag" data-i18n="talk.tag">Anomaly detection</span></div>
+          <p style="margin-top:16px"><a class="btn-link" href="https://roc.cnam.fr/?p=5149" target="_blank" rel="noopener" data-i18n="talk.link">See the seminar page →</a></p>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <!-- Projects -->
+  <section id="projects">
+    <div class="wrap">
+      <h2 class="section-title" data-i18n="proj.ttl">Projects</h2>
+      <div class="projects">
+        <article class="card project reveal">
+          <div class="kicker grad-text">NASA CMAPSS · RUL</div>
+          <h3>AeroRUL Predictive Maintenance</h3>
+          <p data-i18n="p1.d">Predictive maintenance pipeline on CMAPSS data: ingestion, preprocessing, model workflow and a remaining-useful-life prediction interface.</p>
+          <div class="tags"><span class="tag">PostgreSQL</span><span class="tag">RabbitMQ</span><span class="tag">Flask</span><span class="tag">Next.js</span></div>
+          <div class="links"><a href="https://aero-rul-predictive-maintenance.eyazineddine.com" target="_blank" rel="noopener" data-i18n="p.site">Live site ↗</a><a href="https://github.com/EYA179/AeroRUL-Predictive-Maintenance" target="_blank" rel="noopener">GitHub ↗</a></div>
+        </article>
+        <article class="card project reveal">
+          <div class="kicker grad-text">FastAPI · Computer Vision</div>
+          <h3>VisionLab Image Classification Server</h3>
+          <p data-i18n="p2.d">Image classification server with TorchVision models: upload, transformations, histograms and downloadable results.</p>
+          <div class="tags"><span class="tag">FastAPI</span><span class="tag">TorchVision</span><span class="tag">ImageNet</span><span class="tag">PIL</span></div>
+          <div class="links"><a href="https://vision-lab-image-classification.eyazineddine.com" target="_blank" rel="noopener" data-i18n="p.site">Live site ↗</a><a href="https://github.com/EYA179/VisionLab-Image-Classification-Server" target="_blank" rel="noopener">GitHub ↗</a></div>
+        </article>
+        <article class="card project reveal">
+          <div class="kicker grad-text">Machine Learning · NLP</div>
+          <h3>PassGuard Password Strength Classifier</h3>
+          <p data-i18n="p3.d">Classifies weak, medium and strong passwords with TF-IDF features and a comparison of supervised models.</p>
+          <div class="tags"><span class="tag">TF-IDF</span><span class="tag">Logistic Regression</span><span class="tag">AdaBoost</span><span class="tag">XGBoost</span></div>
+          <div class="links"><a href="https://passguard-password-strength-classi.eyazineddine.com" target="_blank" rel="noopener" data-i18n="p.site">Live site ↗</a><a href="https://github.com/EYA179/PassGuard-Password-Strength-Classifier" target="_blank" rel="noopener">GitHub ↗</a></div>
+        </article>
+        <article class="card project reveal">
+          <div class="kicker grad-text">Laravel · E-commerce</div>
+          <h3>Zedify Tech Commerce</h3>
+          <p data-i18n="p4.d">Laravel e-commerce platform for a tech shop with catalogue, cart, checkout, contact forms and an admin dashboard.</p>
+          <div class="tags"><span class="tag">Laravel</span><span class="tag">Blade</span><span class="tag">Eloquent</span><span class="tag">SQLite</span></div>
+          <div class="links"><a href="https://zedify-tech-commerce.eyazineddine.com" target="_blank" rel="noopener" data-i18n="p.site">Live site ↗</a><a href="https://github.com/EYA179/Zedify-Tech-Commerce" target="_blank" rel="noopener">GitHub ↗</a></div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- Journey -->
+  <section id="journey">
+    <div class="wrap">
+      <h2 class="section-title" data-i18n="jr.ttl">From one shore to the other</h2>
+      <p class="journey-sub" data-i18n="jr.sub">Scroll to follow the route · Sfax → Cagliari → Paris → Cagliari</p>
+      <div class="journey">
+        <div class="map-box"><div id="leaflet-map" role="img" aria-label="Map of Sfax, Cagliari and Paris"></div></div>
+        <div class="stops">
+          <article class="stop" data-i="0">
+            <div class="num grad-text">01</div>
+            <h3 data-i18n="s1.t">Sfax, Tunisia</h3>
+            <div class="when">2018 - 2023</div>
+            <ul>
+              <li data-i18n="s1.a">ENETCOM: Licence in ICT (IoT), then Master 1 in Embedded Systems</li>
+              <li data-i18n="s1.b">Internships at STEG, IGL Distribution, ESSE and Exadev</li>
+            </ul>
+          </article>
+          <article class="stop" data-i="1">
+            <div class="num grad-text">02</div>
+            <h3 data-i18n="s2.t">Cagliari, Sardinia</h3>
+            <div class="when" data-i18n="s2.w">Oct 2023 - Aug 2024</div>
+            <ul>
+              <li data-i18n="s2.a">M.Sc. in Computer Engineering, AI &amp; Machine Learning</li>
+              <li data-i18n="s2.b">Medical image classification project, selected for Erasmus in Paris</li>
+            </ul>
+          </article>
+          <article class="stop" data-i="2">
+            <div class="num grad-text">03</div>
+            <h3 data-i18n="s3.t">Paris, France</h3>
+            <div class="when" data-i18n="s3.w">Sep 2024 - Mar 2026</div>
+            <ul>
+              <li data-i18n="s3.a">Erasmus semester at CNAM: big data, network security, forensics, malware</li>
+              <li data-i18n="s3.b">Six-month ML research internship at CNAM on GNN anomaly detection</li>
+            </ul>
+          </article>
+          <article class="stop" data-i="3">
+            <div class="num grad-text">04</div>
+            <h3 data-i18n="s4.t">Cagliari, then Paris</h3>
+            <div class="when">2026</div>
+            <ul>
+              <li data-i18n="s4.a">M.Sc. completed in September 2026</li>
+              <li data-i18n="s4.b">Back in Paris, open to PhD positions and ML roles</li>
+            </ul>
+          </article>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Education -->
+  <section id="education">
+    <div class="wrap">
+      <h2 class="section-title" data-i18n="edu.ttl">Education</h2>
+      <div class="edu">
+        <article class="card reveal">
+          <div class="edu-head"><h3>Università degli Studi di Cagliari</h3><span class="edu-year">2026</span></div>
+          <p class="deg" data-i18n="e1.d">M.Sc. in Computer Engineering, Artificial Intelligence &amp; Machine Learning</p>
+          <div class="loc" data-i18n="e1.l">Cagliari, Italy</div>
+        </article>
+        <article class="card reveal">
+          <div class="edu-head"><h3>Conservatoire national des arts et métiers (CNAM)</h3><span class="edu-year">2025</span></div>
+          <p class="deg" data-i18n="e2.d">Erasmus exchange semester: big data, network security, digital forensics, web security, malware analysis</p>
+          <div class="loc">Paris, France</div>
+        </article>
+        <article class="card reveal">
+          <div class="edu-head"><h3 data-i18n="e3.h">ENETCOM, National School of Electronics and Telecommunications of Sfax</h3><span class="edu-year">2023</span></div>
+          <p class="deg" data-i18n="e3.d">Master 1 in Embedded Systems · Licence in ICT, IoT specialisation (2022)</p>
+          <div class="loc" data-i18n="e3.l">Sfax, Tunisia</div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- Contact -->
+  <section class="contact" id="contact">
+    <div class="wrap">
+      <h2 class="section-title" style="margin-bottom:14px" data-i18n="c.ttl">Interested in working together?</h2>
+      <p data-i18n="c.d">I'm open to PhD positions and machine learning roles in France.</p>
+      <div class="line"><span data-i18n="c.mail">Email:</span> <a href="mailto:eyazineddine902@gmail.com">eyazineddine902@gmail.com</a></div>
+      <div class="line"><span data-i18n="c.web">On the internet:</span> <a href="https://www.linkedin.com/in/eyazineddine/" target="_blank" rel="noopener">LinkedIn</a> · <a href="https://github.com/EYA179" target="_blank" rel="noopener">GitHub</a></div>
+    </div>
+  </section>
+</main>
+
+<footer>© 2026 Eya Zineddine</footer>
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-<script>
-// ─────────────────────────────────────────────
-// Translations
-// ─────────────────────────────────────────────
-const T = {
-  fr: {
-    'nav.about':'À propos','nav.journey':'Parcours','nav.talks':'Séminaires','nav.skills':'Compétences','nav.projects':'Projets','nav.contact':'Contact',
-    'hero.badge':'Ingénieure ML · Disponible à Paris',
-    'hero.sub':'Étudiante M2 Intelligence Artificielle & Cybersécurité',
-    'hero.loc':'🇮🇹 Cagliari, Italie  ·  🇫🇷 Paris, France',
-    'hero.cta':'Me contacter',
-    'about.lbl':'Profil','about.ttl':'À propos',
-    'about.p1':"Étudiante en Master 2 Informatique – Intelligence Artificielle à l'Université de Cagliari, avec une spécialisation en cybersécurité et apprentissage automatique.",
-    'about.p2':"J'ai effectué deux séjours à Paris au CNAM : un semestre Erasmus (2024–2025) puis un stage de recherche de 6 mois en Machine Learning (sept. 2025 – mars 2026), où j'ai conçu un pipeline de prétraitement sur 4 datasets de cybersécurité et implémenté un workflow de détection d'anomalies pour des modèles GNN.",
-    'about.p3':"Autres projets : classification d'images médicales (>90% de précision, 500+ images), système IoT embarqué sur ESP32, afficheur intelligent Arduino, plateforme e-commerce Laravel.",
-    'jrn.lbl':'Géographie','jrn.ttl':"D'une rive à l'autre",
-    'jrn.sub':'Scroll pour suivre le parcours · Sfax → Cagliari → Paris → Cagliari',
-    'type.edu':'Formation','type.int':'Stage','type.exch':'Mobilité',
-    'type.proj':'Projet','type.era':'Erasmus','type.seek':'Recherche',
-    'p1c1.ttl':"ENETCOM – École Nat. d'Électronique et Télécoms",
-    'p1c1.dsc':'Licence ICT spécialisation IoT · Master M1 Systèmes Embarqués',
-    'p1c2.ttl':'STEG Tunisie · Juil. 2020',
-    'p1c2.dsc':'Gestion base de données consommation énergétique · Analyse VBA/Excel',
-    'p1c3.ttl':'IGL Distribution · Juin–Juil. 2021',
-    'p1c3.dsc':'Afficheur publicitaire intelligent Arduino Wi-Fi · Interface web temps réel',
-    'p1c4.ttl':'ESSE · Févr.–Juin 2022',
-    'p1c4.dsc':'Système IoT embarqué ESP32 + EMG · 20+ sessions de tests · Firebase',
-    'p1c5.ttl':'Exadev · Juin–Juil. 2023',
-    'p1c5.dsc':'Plateforme e-commerce Laravel · 50+ produits · Authentification sécurisée',
-    'p2c1.dsc':'Master M2 – Ingénierie Informatique · Intelligence Artificielle & Machine Learning',
-    'p2c2.ttl':"Classification d'images médicales",
-    'p2c2.dsc':'Détection de cancer de la peau · 500+ images · Précision >90% · Serveur web temps réel',
-    'p2c3.ttl':'Sélection ERASMUS',
-    'p2c3.dsc':"Admission au programme d'échange compétitif ERASMUS pour Paris",
-    'p3c1.dsc':'Big Data · Sécurité des Réseaux · Forensique Informatique · Sécurité Web · Malwares',
-    'p3c2.ttl':'CNAM Paris – Ingénieur Machine Learning · Sept. 2025 – Mars 2026',
-    'p3c2.dsc':'Pipeline de détection d\'anomalies sur 4 datasets cybersécurité · Modèles GNN · Séries temporelles',
-    'p4c1.dsc':'Master M2 en cours · Intelligence Artificielle & Machine Learning',
-    'p4c2.ttl':'Ouverte aux opportunités – Paris',
-    'p4c2.dsc':'Ingénieure Machine Learning · CDI / CDD · Alternance bienvenue',
-    'sk.lbl':'Savoir-faire','sk.ttl':'Compétences',
-    'sg1':'IA & Machine Learning','sg2':'Cybersécurité','sg3':'Embarqué & IoT','sg4':'Développement',
-    'tag.anom':"Détection d'anomalies",'tag.imgcls':"Classification d'images",
-    'tag.timeseries':'Séries temporelles','tag.cyber':'Cybersécurité',
-    'tag.intrusion':"Détection d'intrusions",'tag.netsec':'Sécurité des réseaux',
-    'tag.forensics':'Forensique informatique','tag.malware':'Analyse de malwares',
-    'tag.websec':'Sécurité web','tag.embedded':'Systèmes embarqués',
-    'talk.lbl':'Séminaire','talk.ttl':'Séminaires & présentations',
-    'talk.badge':'CNAM · ROC Team',
-    'talk.title':'Enhancing Anomaly Detection Using GNNs with PCA and DTW',
-    'talk.body':"Eya a participé comme intervenante à un séminaire de l'équipe ROC au CNAM Paris, avec une présentation sur la détection d'anomalies dans des datasets réseau avec des graph neural networks, PCA et Dynamic Time Warping.",
-    'talk.link':'Voir le séminaire',
-    'proj.lbl':'Sélection','proj.ttl':'Projets',
-    'proj.live':'Voir le site',
-    'proj.zedify':'Plateforme e-commerce Laravel pour une boutique tech avec catalogue, panier, commande, contacts et tableau de bord.',
-    'proj.passguard':'Classification de mots de passe faibles, moyens et forts avec TF-IDF et comparaison de modèles supervisés.',
-    'proj.vision':"Serveur de classification d'images avec modèles TorchVision, upload, transformations, histogrammes et résultats téléchargeables.",
-    'proj.aero':'Pipeline de maintenance prédictive avec données CMAPSS, ingestion, prétraitement, workflow modèle et interface de prédiction RUL.',
-    'ct.lbl':'Me contacter','ct.ttl':'Travaillons ensemble',
-    'ct.sub':'À la recherche d\'un poste d\'Ingénieure Machine Learning à Paris. Alternance bienvenue.',
-  },
-  en: {
-    'nav.about':'About','nav.journey':'Journey','nav.talks':'Seminars','nav.skills':'Skills','nav.projects':'Projects','nav.contact':'Contact',
-    'hero.badge':'ML Engineer · Available in Paris',
-    'hero.sub':'M2 Student in Artificial Intelligence & Cybersecurity',
-    'hero.loc':'🇮🇹 Cagliari, Italy  ·  🇫🇷 Paris, France',
-    'hero.cta':'Contact me',
-    'about.lbl':'Profile','about.ttl':'About',
-    'about.p1':"Master's student in Computer Science – Artificial Intelligence at the University of Cagliari, specializing in cybersecurity and machine learning.",
-    'about.p2':"I completed two stays in Paris at CNAM: an Erasmus semester (2024–2025) followed by a 6-month Machine Learning research internship (Sept. 2025 – Mar. 2026), where I built a preprocessing pipeline on 4 cybersecurity datasets and implemented an anomaly detection workflow for GNN models.",
-    'about.p3':"Other projects: medical image classification (>90% accuracy, 500+ images), real-time ESP32 IoT embedded system, Arduino smart display, Laravel e-commerce platform.",
-    'jrn.lbl':'Geography','jrn.ttl':'Shore to Shore',
-    'jrn.sub':'Scroll to follow the journey · Sfax → Cagliari → Paris → Cagliari',
-    'type.edu':'Education','type.int':'Internship','type.exch':'Exchange',
-    'type.proj':'Project','type.era':'Erasmus','type.seek':'Open to work',
-    'p1c1.ttl':'ENETCOM – National School of Electronics & Telecoms',
-    'p1c1.dsc':"ICT Bachelor's degree, IoT track · M1 Master in Embedded Systems",
-    'p1c2.ttl':'STEG Tunisia · Jul. 2020',
-    'p1c2.dsc':'Energy consumption database management · VBA/Excel analysis',
-    'p1c3.ttl':'IGL Distribution · Jun–Jul. 2021',
-    'p1c3.dsc':'Intelligent Arduino Wi-Fi display · Real-time web interface',
-    'p1c4.ttl':'ESSE · Feb–Jun 2022',
-    'p1c4.dsc':'ESP32 + EMG embedded IoT system · 20+ test sessions · Firebase',
-    'p1c5.ttl':'Exadev · Jun–Jul. 2023',
-    'p1c5.dsc':'Laravel e-commerce platform · 50+ products · Secure authentication',
-    'p2c1.dsc':'Master M2 – Computer Engineering · Artificial Intelligence & Machine Learning',
-    'p2c2.ttl':'Medical Image Classification',
-    'p2c2.dsc':'Skin cancer detection · 500+ images · >90% accuracy · Real-time web server',
-    'p2c3.ttl':'ERASMUS Selection',
-    'p2c3.dsc':'Admitted to the competitive ERASMUS exchange program to Paris',
-    'p3c1.dsc':'Big Data · Network Security · Computer Forensics · Web Security · Malware Analysis',
-    'p3c2.ttl':'CNAM Paris – Machine Learning Engineer · Sept. 2025 – Mar. 2026',
-    'p3c2.dsc':'Anomaly detection pipeline on 4 cybersecurity datasets · GNN models · Time series',
-    'p4c1.dsc':'M2 Master in progress · Artificial Intelligence & Machine Learning',
-    'p4c2.ttl':'Open to Opportunities – Paris',
-    'p4c2.dsc':'Machine Learning Engineer · Full-time / Contract · Work-study welcome',
-    'sk.lbl':'Expertise','sk.ttl':'Skills',
-    'sg1':'AI & Machine Learning','sg2':'Cybersecurity','sg3':'Embedded & IoT','sg4':'Development',
-    'tag.anom':'Anomaly Detection','tag.imgcls':'Image Classification',
-    'tag.timeseries':'Time Series','tag.cyber':'Cybersecurity',
-    'tag.intrusion':'Intrusion Detection','tag.netsec':'Network Security',
-    'tag.forensics':'Computer Forensics','tag.malware':'Malware Analysis',
-    'tag.websec':'Web Security','tag.embedded':'Embedded Systems',
-    'talk.lbl':'Seminar','talk.ttl':'Talks & Seminars',
-    'talk.badge':'CNAM · ROC Team',
-    'talk.title':'Enhancing Anomaly Detection Using GNNs with PCA and DTW',
-    'talk.body':'Eya participated as a speaker in a ROC Team seminar at CNAM Paris, presenting work on anomaly detection for networking datasets using graph neural networks with PCA and Dynamic Time Warping.',
-    'talk.link':'Open seminar',
-    'proj.lbl':'Selection','proj.ttl':'Projects',
-    'proj.live':'Open site',
-    'proj.zedify':'Laravel e-commerce platform for a tech store with catalog, cart, checkout, contacts, and dashboard views.',
-    'proj.passguard':'Password strength classification for weak, medium, and strong labels using TF-IDF and supervised model comparison.',
-    'proj.vision':'Image classification server with TorchVision models, upload, transformations, histograms, and downloadable results.',
-    'proj.aero':'Predictive maintenance pipeline with CMAPSS data, ingestion, preprocessing, model workflow, and an RUL prediction interface.',
-    'ct.lbl':'Contact','ct.ttl':"Let's work together",
-    'ct.sub':'Seeking a Machine Learning Engineer position in Paris. Open to work-study programs.',
-  }
-};
-
-let lang  = localStorage.getItem('lang')  || 'fr';
-let theme = localStorage.getItem('theme') || 'dark';
-
-function applyLang(l) {
-  lang = l;
-  localStorage.setItem('lang', l);
-  document.documentElement.lang = l;
-  document.querySelectorAll('[data-i18n]').forEach(el => {
-    const v = T[l][el.dataset.i18n];
-    if (v !== undefined) el.textContent = v;
-  });
-  document.getElementById('langBtn').textContent = (l === 'fr') ? '🇬🇧 EN' : '🇫🇷 FR';
-}
-
-function applyTheme(t) {
-  theme = t;
-  localStorage.setItem('theme', t);
-  const isLight = (t === 'light');
-  document.documentElement.classList.toggle('light', isLight);
-  document.getElementById('icon-moon').style.display = isLight ? 'none'  : 'block';
-  document.getElementById('icon-sun').style.display  = isLight ? 'block' : 'none';
-  if (typeof setMapTheme === 'function') setMapTheme(t);
-}
-
-function toggleLang()  { applyLang(lang  === 'fr' ? 'en' : 'fr'); }
-function toggleTheme() { applyTheme(theme === 'dark' ? 'light' : 'dark'); }
-
-// ─────────────────────────────────────────────
-// Leaflet map
-// ─────────────────────────────────────────────
-(function () {
-  const stops = [
-    { lat: 34.74, lng: 10.76, zoom: 10, city: 'Sfax' },
-    { lat: 39.21, lng: 9.11,  zoom: 11, city: 'Cagliari' },
-    { lat: 48.86, lng: 2.35,  zoom: 11, city: 'Paris' },
-    { lat: 39.21, lng: 9.11,  zoom: 11, city: 'Cagliari' },
-  ];
-
-  const lmap = window._lmap = L.map('leaflet-map', {
-    center: [40, 8], zoom: 5,
-    zoomControl: false, scrollWheelZoom: false,
-    dragging: false, touchZoom: false, doubleClickZoom: false, keyboard: false,
-  });
-
-  const TILES = {
-    dark:  'https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Base/MapServer/tile/{z}/{y}/{x}',
-    light: 'https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}',
-  };
-  const ATTRIB = 'Tiles © <a href="https://www.esri.com">Esri</a>, © <a href="https://openstreetmap.org">OpenStreetMap</a> contributors';
-  const TILE_OPTS = { attribution: ATTRIB, maxZoom: 16 };
-
-  let currentTile = L.tileLayer(TILES.dark, TILE_OPTS).addTo(lmap);
-
-  window.setMapTheme = function(t) {
-    lmap.removeLayer(currentTile);
-    currentTile = L.tileLayer(TILES[t] || TILES.dark, TILE_OPTS).addTo(lmap);
-  };
-
-  const markers = [], lines = [];
-  let active = -1;
-
-  function makeMarker(idx) {
-    const m = L.circleMarker([stops[idx].lat, stops[idx].lng], {
-      radius: 9, fillColor: '#60a5fa', color: '#ffffff', weight: 2.5, fillOpacity: 1,
-    }).addTo(lmap);
-    m.bindTooltip(stops[idx].city, {
-      permanent: true, direction: 'top', offset: [0, -14], className: 'map-tooltip',
-    }).openTooltip();
-    return m;
-  }
-
-  function makeLine(a, b) {
-    return L.polyline([[stops[a].lat, stops[a].lng], [stops[b].lat, stops[b].lng]], {
-      color: '#60a5fa', weight: 2, dashArray: '10 8', opacity: 0.75,
-    }).addTo(lmap);
-  }
-
-  function activate(idx) {
-    if (idx === active) return;
-    active = idx;
-    for (let i = 0; i <= idx; i++) if (!markers[i]) markers[i] = makeMarker(i);
-    for (let i = 0; i <  idx; i++) if (!lines[i])   lines[i]   = makeLine(i, i + 1);
-    lmap.flyTo([stops[idx].lat, stops[idx].lng], stops[idx].zoom, { duration: 1.8, easeLinearity: 0.4 });
-    for (let i = 0; i < 4; i++) {
-      const d = document.getElementById('dot-'  + i);
-      const l = document.getElementById('line-' + i);
-      if (d) d.classList.toggle('active', i <= idx);
-      if (l) l.classList.toggle('active', i < idx);
-    }
-    document.querySelectorAll('.journey-panel').forEach((p, i) => {
-      p.classList.toggle('panel-active', i === idx);
-    });
-  }
-
-  const panels = document.querySelectorAll('.journey-panel');
-  function checkScroll() {
-    const mid = window.scrollY + window.innerHeight * 0.5;
-    let found = -1;
-    panels.forEach((p, i) => {
-      if (p.getBoundingClientRect().top + window.scrollY <= mid) found = i;
-    });
-    if (found >= 0) activate(found);
-  }
-
-  let ticking = false;
-  window.addEventListener('scroll', () => {
-    if (!ticking) {
-      requestAnimationFrame(() => { checkScroll(); ticking = false; });
-      ticking = true;
-    }
-  }, { passive: true });
-
-  setTimeout(checkScroll, 200);
-})();
-
-// ─────────────────────────────────────────────
-// Init — after Leaflet so setMapTheme is defined
-// ─────────────────────────────────────────────
-applyLang(lang);
-applyTheme(theme);
-
-// ─────────────────────────────────────────────
-// Project card reveal
-// ─────────────────────────────────────────────
-(function () {
-  const cards = document.querySelectorAll('.project-card, .talk-card');
-  if (!cards.length) return;
-  if (!('IntersectionObserver' in window)) {
-    cards.forEach(card => card.classList.add('is-visible'));
-    return;
-  }
-  const observer = new IntersectionObserver(entries => {
-    entries.forEach(entry => {
-      if (!entry.isIntersecting) return;
-      entry.target.classList.add('is-visible');
-      observer.unobserve(entry.target);
-    });
-  }, { threshold: 0.18 });
-  cards.forEach(card => observer.observe(card));
-})();
-
-// ─────────────────────────────────────────────
-// Section particles
-// ─────────────────────────────────────────────
-(function () {
-  // Wind streaks in hero
-  const heroP = document.getElementById('heroParticles');
-  if (heroP) {
-    for (let i = 0; i < 14; i++) {
-      const s = document.createElement('div');
-      s.className = 'wind-streak';
-      const top = Math.random() * 100;
-      const width = 40 + Math.random() * 80;
-      Object.assign(s.style, {
-        top:               top + '%',
-        width:             width + 'px',
-        '--dy':            (Math.random() * 20 - 10) + 'px',
-        animationDuration: (6 + Math.random() * 8) + 's',
-        animationDelay:    -(Math.random() * 12) + 's',
-      });
-      heroP.appendChild(s);
-    }
-  }
-
-  // Floating petals in contact
-  const ctP = document.getElementById('contactParticles');
-  const COLORS = ['#f4a7b9','#f5d87a','#f4a36a','#b2d8c8','#e8d5b7','#d4b8e0'];
-  if (ctP) {
-    for (let i = 0; i < 10; i++) {
-      const p = document.createElement('div');
-      p.className = 'sec-petal';
-      const size = 6 + Math.random() * 10;
-      Object.assign(p.style, {
-        left:              (Math.random() * 110 - 5) + '%',
-        width:             size + 'px',
-        height:            (size * 0.45) + 'px',
-        background:        COLORS[Math.floor(Math.random() * COLORS.length)],
-        animationDuration: (5 + Math.random() * 6) + 's',
-        animationDelay:    -(Math.random() * 8) + 's',
-      });
-      ctP.appendChild(p);
-    }
-  }
-})();
-
-// ─────────────────────────────────────────────
-// Custom cursor
-// ─────────────────────────────────────────────
-(function () {
-  if (!window.matchMedia('(pointer: fine)').matches) return;
-
-  const dot  = document.querySelector('.cursor-dot');
-  const ring = document.querySelector('.cursor-ring');
-  let mx = -100, my = -100, rx = -100, ry = -100;
-
-  document.addEventListener('mousemove', e => {
-    mx = e.clientX; my = e.clientY;
-    dot.style.left = mx + 'px';
-    dot.style.top  = my + 'px';
-    dot.classList.remove('hidden');
-    ring.classList.remove('hidden');
-  });
-
-  document.addEventListener('mouseleave', () => {
-    dot.classList.add('hidden');
-    ring.classList.add('hidden');
-  });
-
-  document.addEventListener('mousedown', () => ring.classList.add('pressing'));
-  document.addEventListener('mouseup',   () => ring.classList.remove('pressing'));
-
-  document.querySelectorAll('a, button, .ctrl-btn, .contact-link, .btn').forEach(el => {
-    el.addEventListener('mouseenter', () => ring.classList.add('hover'));
-    el.addEventListener('mouseleave', () => ring.classList.remove('hover'));
-  });
-
-  (function tick() {
-    rx += (mx - rx) * 0.11;
-    ry += (my - ry) * 0.11;
-    ring.style.left = rx + 'px';
-    ring.style.top  = ry + 'px';
-    requestAnimationFrame(tick);
-  })();
-})();
-
-// ─────────────────────────────────────────────
-// Loader: petals + percentage counter
-// ─────────────────────────────────────────────
-(function () {
-  // ── Petals ──
-  const canvas  = document.getElementById('petalCanvas');
-  const COLORS  = ['#f4a7b9','#f5d87a','#f4a36a','#b2d8c8','#e8d5b7','#d4b8e0','#a8d8c0'];
-  const SHAPES  = [
-    '50% 40% 50% 40%',
-    '60% 40% 30% 70% / 50% 60% 40% 50%',
-    '30% 70% 70% 30% / 30% 30% 70% 70%',
-  ];
-
-  for (let i = 0; i < 22; i++) {
-    const p = document.createElement('div');
-    p.className = 'petal';
-    const size = 7 + Math.random() * 11;
-    Object.assign(p.style, {
-      left:              (Math.random() * 110 - 5) + '%',
-      width:             size + 'px',
-      height:            (size * 0.45 + Math.random() * size * 0.3) + 'px',
-      background:        COLORS[Math.floor(Math.random() * COLORS.length)],
-      borderRadius:      SHAPES[Math.floor(Math.random() * SHAPES.length)],
-      animationDuration: (4 + Math.random() * 4) + 's',
-      animationDelay:    (Math.random() * 5) + 's',
-    });
-    canvas.appendChild(p);
-  }
-
-  // ── Tile preload ──
-  // Convert lat/lng to tile XY, fetch tiles into browser cache while loader shows
-  (function () {
-    function xy(lat, lng, z) {
-      const n = 1 << z, lr = lat * Math.PI / 180;
-      return {
-        x: Math.floor((lng + 180) / 360 * n),
-        y: Math.floor((1 - Math.log(Math.tan(lr) + 1 / Math.cos(lr)) / Math.PI) / 2 * n)
-      };
-    }
-    const views = [
-      { lat: 40,    lng: 8,     z: 5,  r: 3 }, // overview (zoom 5, wide)
-      { lat: 34.74, lng: 10.76, z: 10, r: 2 }, // Sfax
-      { lat: 39.21, lng: 9.11,  z: 11, r: 2 }, // Cagliari
-      { lat: 48.86, lng: 2.35,  z: 11, r: 2 }, // Paris
-    ];
-    const s = ['a', 'b', 'c', 'd'];
-    views.forEach(v => {
-      const t = xy(v.lat, v.lng, v.z);
-      for (let dx = -v.r; dx <= v.r; dx++)
-        for (let dy = -v.r; dy <= v.r; dy++) {
-          const sub = s[Math.abs(t.x + dx + t.y + dy) % 4];
-          new Image().src = `https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Base/MapServer/tile/${v.z}/${t.y + dy}/${t.x + dx}`;
-        }
-    });
-  })();
-
-  // ── Percentage counter ──
-  const numEl  = document.getElementById('pctNum');
-  let pct      = 0;
-  let rafId;
-  let pageReady = false;
-
-  function animPct() {
-    const target = pageReady ? 100 : 88;
-    const speed  = pageReady ? 0.06 : 0.025;
-    if (pct < target) {
-      pct += (target - pct) * speed + 0.15;
-      numEl.textContent = Math.min(Math.floor(pct), target);
-      rafId = requestAnimationFrame(animPct);
-    } else if (pageReady) {
-      numEl.textContent = '100';
-      setTimeout(dismiss, 420);
-    }
-  }
-
-  function dismiss() {
-    const loader = document.getElementById('loader');
-    if (!loader) return;
-    loader.classList.add('out');
-    setTimeout(() => {
-      loader.remove();
-      if (window._lmap) window._lmap.invalidateSize();
-    }, 700);
-  }
-
-  window.addEventListener('load', () => {
-    pageReady = true;
-    cancelAnimationFrame(rafId);
-    animPct();
-  });
-
-  animPct();
-})();
-</script>
-
-<style>
-/* ── Map tooltip ── */
-.map-tooltip {
-  background: rgba(10,22,40,0.9) !important;
-  border: 1px solid #1e3a5f !important;
-  border-radius: 6px !important;
-  color: #e2e8f0 !important;
-  font-family: 'Poppins', sans-serif !important;
-  font-size: 11px !important;
-  font-weight: 600 !important;
-  padding: 3px 8px !important;
-  white-space: nowrap !important;
-  box-shadow: none !important;
-}
-.map-tooltip::before { display: none !important; }
-
-/* ── Loader ── */
-#loader { transition: opacity 0.65s ease; }
-#loader.out { opacity: 0; pointer-events: none; }
-
-#petalCanvas {
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-}
-
-.loader-photo-wrap {
-  width: 168px;
-  height: 168px;
-  border-radius: 50%;
-  overflow: hidden;
-  box-shadow:
-    0 0 0 2px rgba(255,255,255,0.12),
-    0 0 0 18px rgba(0,0,0,0.18),
-    0 24px 64px rgba(0,0,0,0.45);
-  position: relative;
-  flex-shrink: 0;
-  margin-bottom: 2rem;
-  animation: ld-photo-in 0.7s cubic-bezier(.22,.68,0,1.2) 0.2s both;
-}
-.loader-photo-wrap::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  border-radius: 50%;
-  box-shadow: inset 0 0 24px rgba(0,0,0,0.35);
-}
-.loader-photo {
-  width: 100%; height: 100%;
-  object-fit: cover;
-  object-position: center top;
-  display: block;
-}
-
-.loader-pct {
-  font-family: 'Poppins', sans-serif;
-  font-size: 3rem;
-  font-weight: 700;
-  color: rgba(255,255,255,0.88);
-  line-height: 1;
-  letter-spacing: -0.01em;
-  animation: ld-fade-in 0.5s ease 0.5s both;
-}
-.loader-pct sup {
-  font-size: 1.1rem;
-  font-weight: 400;
-  vertical-align: super;
-  margin-left: 2px;
-  opacity: 0.7;
-}
-
-.loader-caption {
-  font-family: 'Poppins', sans-serif;
-  font-size: 0.82rem;
-  font-weight: 400;
-  font-style: italic;
-  color: rgba(255,255,255,0.4);
-  margin-top: 0.4rem;
-  letter-spacing: 0.02em;
-  animation: ld-fade-in 0.5s ease 0.65s both;
-}
-
-/* Petals */
-.petal {
-  position: absolute;
-  border-radius: 50% 40% 50% 40%;
-  opacity: 0;
-  animation: petal-fall linear infinite;
-}
-@keyframes petal-fall {
-  0%   { opacity: 0;   transform: translateY(-10px) rotate(0deg)   translateX(0px); }
-  8%   { opacity: 0.85; }
-  40%  { transform: translateY(35vh)  rotate(80deg)  translateX(22px); }
-  65%  { transform: translateY(65vh)  rotate(140deg) translateX(-18px); }
-  92%  { opacity: 0.6; }
-  100% { opacity: 0;   transform: translateY(108vh) rotate(210deg) translateX(14px); }
-}
-
-@keyframes ld-photo-in {
-  from { opacity: 0; transform: scale(0.88); }
-  to   { opacity: 1; transform: scale(1); }
-}
-@keyframes ld-fade-in {
-  from { opacity: 0; transform: translateY(6px); }
-  to   { opacity: 1; transform: translateY(0); }
-}
-
-/* ── Custom cursor (pointer devices only) ── */
-@media (pointer: fine) {
-  *, *::before, *::after { cursor: none !important; }
-
-  .cursor-dot {
-    position: fixed;
-    top: 0; left: 0;
-    width: 6px; height: 6px;
-    background: #60a5fa;
-    border-radius: 50%;
-    pointer-events: none;
-    z-index: 99998;
-    transform: translate(-50%, -50%);
-    transition: width 0.15s, height 0.15s, opacity 0.15s;
-    will-change: left, top;
-  }
-  .cursor-ring {
-    position: fixed;
-    top: 0; left: 0;
-    width: 34px; height: 34px;
-    border: 1.5px solid rgba(96,165,250,0.5);
-    border-radius: 50%;
-    pointer-events: none;
-    z-index: 99997;
-    transform: translate(-50%, -50%);
-    transition: width 0.22s ease, height 0.22s ease,
-                border-color 0.22s, background 0.22s, opacity 0.15s;
-    will-change: left, top;
-  }
-  .cursor-ring.hover {
-    width: 54px; height: 54px;
-    border-color: #60a5fa;
-    background: rgba(96,165,250,0.07);
-  }
-  .cursor-ring.pressing {
-    width: 26px; height: 26px;
-    border-color: #60a5fa;
-  }
-  .cursor-dot.hidden, .cursor-ring.hidden { opacity: 0; }
-}
-@media (pointer: coarse) {
-  .cursor-dot, .cursor-ring { display: none; }
-}
-</style>
-
+<script src="main.js"></script>
 </body>
 </html>
