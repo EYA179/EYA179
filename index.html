@@ -28,11 +28,8 @@
   <meta name="keywords" content="EYA Zineddine, Machine Learning Engineer, Ingénieure Machine Learning, Paris, Intelligence Artificielle, GNN, Cybersécurité, PyTorch, TensorFlow, alternance" />
   <link rel="canonical" href="https://eyazineddine.com" />
 
-  <!-- Preconnect to CARTO tile CDN so tile fetches are instant -->
-  <link rel="preconnect" href="https://a.basemaps.cartocdn.com" crossorigin>
-  <link rel="preconnect" href="https://b.basemaps.cartocdn.com" crossorigin>
-  <link rel="preconnect" href="https://c.basemaps.cartocdn.com" crossorigin>
-  <link rel="preconnect" href="https://d.basemaps.cartocdn.com" crossorigin>
+  <!-- Preconnect to the Esri tile server so tile fetches are instant -->
+  <link rel="preconnect" href="https://server.arcgisonline.com" crossorigin>
 
   <!-- Open Graph -->
   <meta property="og:type"        content="website" />
@@ -671,11 +668,11 @@ function toggleTheme() { applyTheme(theme === 'dark' ? 'light' : 'dark'); }
   });
 
   const TILES = {
-    dark:  'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',
-    light: 'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png',
+    dark:  'https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Base/MapServer/tile/{z}/{y}/{x}',
+    light: 'https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}',
   };
-  const ATTRIB = '© <a href="https://openstreetmap.org">OpenStreetMap</a> © <a href="https://carto.com">CARTO</a>';
-  const TILE_OPTS = { attribution: ATTRIB, subdomains: 'abcd', maxZoom: 19 };
+  const ATTRIB = 'Tiles © <a href="https://www.esri.com">Esri</a>, © <a href="https://openstreetmap.org">OpenStreetMap</a> contributors';
+  const TILE_OPTS = { attribution: ATTRIB, maxZoom: 16 };
 
   let currentTile = L.tileLayer(TILES.dark, TILE_OPTS).addTo(lmap);
 
@@ -902,7 +899,7 @@ applyTheme(theme);
       for (let dx = -v.r; dx <= v.r; dx++)
         for (let dy = -v.r; dy <= v.r; dy++) {
           const sub = s[Math.abs(t.x + dx + t.y + dy) % 4];
-          new Image().src = `https://${sub}.basemaps.cartocdn.com/dark_all/${v.z}/${t.x + dx}/${t.y + dy}.png`;
+          new Image().src = `https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Base/MapServer/tile/${v.z}/${t.y + dy}/${t.x + dx}`;
         }
     });
   })();
